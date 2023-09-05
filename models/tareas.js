@@ -20,10 +20,27 @@ class Tareas {
         });
     }
 
-    crearTarea(desc = '') {
-        const tarea = new Tarea(desc);
-        this._listado[tarea.id] = tarea;
-        this.guardarTareas();
+    async crearTareas() {
+        const tareasNuevas = [];
+        console.log('Ingrese la descripción de la tarea (o "EXIT" para salir): ');
+        let desc = await leerInput();
+
+        while (desc.toUpperCase() !== 'EXIT') {
+            const tarea = new Tarea(desc);
+            this._listado[tarea.id] = tarea;
+            tareasNuevas.push(tarea);
+            desc = await leerInput();
+        }
+
+        if (tareasNuevas.length > 0) {
+            console.log('Tareas creadas:');
+            tareasNuevas.forEach((tarea, index) => {
+                console.log(`${index + 1}. ${tarea.desc}`);
+            });
+            this.guardarTareas();
+        } else {
+            console.log('No se han creado tareas.');
+        }
     }
 
     listarTareas() {
@@ -34,14 +51,14 @@ class Tareas {
         });
     }
 
-    marcarTareasCompletas(ids) {
-        ids.forEach(id => {
-            if (this._listado[id]) {
-                this._listado[id].completadoEn = new Date().toISOString();
-            }
+    listarTareasCompletas() {
+        const tareasCompletas = this.listadoArr.filter(tarea => tarea.completadoEn !== null);
+        console.log('Tareas completas:');
+        tareasCompletas.forEach((tarea, index) => {
+            console.log(`${index + 1}. ${tarea.desc}`);
         });
-        this.guardarTareas();
     }
+
 
     listarTareasIncompletas() {
         const tareasIncompletas = this.listadoArr.filter(tarea => tarea.completadoEn === null);
@@ -53,34 +70,41 @@ class Tareas {
 
     async completarTarea() {
         this.listarTareasIncompletas();
+        console.log('Ingrese los números de las tareas que desea completar (separados por coma): ');
+        const idsCompletar = await leerInput();
+        const idsCompletarArray = idsCompletar.split(',').map(id => parseInt(id.trim()) - 1);
+
         const tareasIncompletas = this.listadoArr.filter(tarea => tarea.completadoEn === null);
-        if (tareasIncompletas.length === 0) {
-            console.log('No hay tareas incompletas para completar.');
-        } else {
-            const idsCompletar = await leerInput('Ingrese el número de la tarea que desea completar: ');
-            const indexCompletar = parseInt(idsCompletar) - 1;
+
+        idsCompletarArray.forEach(indexCompletar => {
             if (indexCompletar >= 0 && indexCompletar < tareasIncompletas.length) {
                 const tareaACompletar = tareasIncompletas[indexCompletar];
                 tareaACompletar.completadoEn = new Date().toISOString();
                 console.log(`La tarea "${tareaACompletar.desc}" se ha marcado como completada.`);
-                this.guardarTareas();
             } else {
-                console.log('Número de tarea no válido.');
+                console.log(`Número de tarea no válido: ${indexCompletar + 1}`);
             }
-        }
+        });
+
+        this.guardarTareas();
     }
 
     async borrarTarea() {
         this.listarTareas();
-        const numeroBorrar = await leerInput('Ingrese el número de la tarea que desea eliminar: ');
+        console.log('Ingrese los números de las tareas que desea eliminar (separados por coma): ');
+        const numerosBorrar = await leerInput();
+        const numerosBorrarArray = numerosBorrar.split(',').map(id => parseInt(id.trim()) - 1);
 
-        const index = parseInt(numeroBorrar) - 1;
-        if (index >= 0 && index < this.listadoArr.length) {
-            const tareaAEliminar = this.listadoArr[index];
-            console.log(`Tarea eliminada: ${tareaAEliminar.desc}`);
-        } else {
-            console.log('Número de tarea no válido.');
-        }
+        numerosBorrarArray.forEach(index => {
+            if (index >= 0 && index < this.listadoArr.length) {
+                const tareaAEliminar = this.listadoArr[index];
+                console.log(`Tarea eliminada: ${tareaAEliminar.desc}`);
+                delete this._listado[tareaAEliminar.id];
+            } else {
+                console.log(`Número de tarea no válido: ${index + 1}`);
+            }
+        });
+
         this.guardarTareas();
     }
 

@@ -59,7 +59,7 @@ const pausa = async () => {
         {
             type: 'input',
             name: 'enter',
-            message: `\nPresione ${'ENTER'.red} to continue \n`
+            message: `\nPresione ${'ENTER'.red} para continuar \n`
         }
     ]
 

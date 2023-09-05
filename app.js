@@ -13,8 +13,7 @@ const main = async () => {
 
         switch (opt) {
             case '1':
-                const desc = await leerInput();
-                tareas.crearTarea(desc); 
+                await tareas.crearTareas(); 
                 await pausa(); 
                 break;
 
