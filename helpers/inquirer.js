@@ -75,7 +75,7 @@ const leerInput = async () => {
         {
             type: 'input',
             name: 'desc',
-            message: 'ingrese la tarea:',
+            message: ' ',
             validate(value) {
                 if (value.length === 0) {
                     return 'Por favor ingrese un valor';
@@ -97,6 +97,6 @@ const leerInput = async () => {
 module.exports = {
     inquirerMenu,
     leerInput,
-    pausa
+    pausa,
     
 }
