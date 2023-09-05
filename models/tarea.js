@@ -12,6 +12,18 @@ class Tarea {
         this.desc = desc;
         this.completadoEn = null;
     }
+    completar() {
+        this.completadoEn = new Date().toISOString();
+    }
+
+    obtenerFechaHoraCompletado() {
+        if (this.completadoEn) {
+            const fechaHora = new Date(this.completadoEn);
+            return fechaHora.toLocaleString();
+        } else {
+            return 'No completada aún';
+        }
+    }
 }
 
 module.exports = Tarea;

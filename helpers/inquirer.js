@@ -1,6 +1,5 @@
 require('colors');
 const inquirer = require('inquirer');
-const promp = inquirer.createPromptModule();
 
 const preguntas = [
     {
@@ -34,7 +33,7 @@ const preguntas = [
             },
             {
                 value: '0',
-                name: `${'7.'.red} ${'Salir'.yellow}`
+                name: `${'0.'.red} ${'Salir'.yellow}`
             },
         ],
     },
@@ -47,11 +46,12 @@ const inquirerMenu = async () => {
 
     let otp = '';
 
-    const opt = await prompt(preguntas).then(data => {
+    const opt = await inquirer.prompt(preguntas).then(data => {
         otp = data['opcion']
     });
 
     return otp;
+    
 }
 
 const pausa = async () => {
@@ -66,7 +66,7 @@ const pausa = async () => {
     let pau = '';
     console.log('\n');
     await inquirer.prompt(question).then(data => {
-        pau = data['message']
+        pau = data['enter']
     });
 }
 
@@ -75,7 +75,7 @@ const leerInput = async () => {
         {
             type: 'input',
             name: 'desc',
-            message,
+            message: 'ingrese la tarea:',
             validate(value) {
                 if (value.length === 0) {
                     return 'Por favor ingrese un valor';
@@ -86,10 +86,17 @@ const leerInput = async () => {
     ]
 
     let leer = '';
-    await inquirer.createPromptModule
+    await inquirer.prompt(question).then(data => {
+        leer = data['desc'];
+    });
+
+    return leer;
 }
 
 
 module.exports = {
-    inquirerMenu
+    inquirerMenu,
+    leerInput,
+    pausa
+    
 }
